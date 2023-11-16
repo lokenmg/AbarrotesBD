@@ -1,0 +1,122 @@
+
+CREATE TABLE Opciones_sistema(
+	id_opciones SERIAL PRIMARY KEY,
+	nombre VARCHAR (20),
+	tipo varchar (10)
+);
+
+CREATE TABLE Roles(
+	id_rol SERIAL PRIMARY KEY,
+	cve varchar (20),
+	descripcion VARCHAR(60)
+);
+
+CREATE TABLE Opciones_roles(
+	id_opc_rol SERIAL PRIMARY KEY,
+	id_opciones INTEGER REFERENCES Opciones_sistema(id_opciones),
+	id_rol INTEGER REFERENCES Roles(id_rol)
+);
+
+CREATE TABLE Empleados(
+	id_empleado SERIAL PRIMARY KEY,
+	nombre VARCHAR(40),
+	apellidos VARCHAR(70),
+	contrasenia VARCHAR(70),
+	id_rol INTEGER REFERENCES Roles(id_rol)
+);
+
+CREATE TABLE Estado_pago(
+	id_estado_pago SERIAL PRIMARY KEY,
+	estado VARCHAR(20)
+);
+
+CREATE TABLE Anticipos(
+	id_anticipo SERIAL PRIMARY KEY,
+	fecha DATE,
+	monto DECIMAL (10,2),
+	resto DECIMAL (10,2),
+	id_estado_pago INTEGER REFERENCES Estado_pago(id_estado_pago)
+);
+
+CREATE TABLE Clientes(
+	id_cliente SERIAL PRIMARY KEY,
+	nombre VARCHAR(40),
+	apellidos VARCHAR (70),
+	telefono VARCHAR(10),
+	direccion TEXT 
+);
+
+CREATE TABLE Estados_pedidos(
+	id_estado SERIAL PRIMARY KEY,
+	estado VARCHAR(20)
+);
+
+CREATE TABLE Detalle_pedido(
+	id_detalle_pedido SERIAL PRIMARY KEY, 
+	fecha_entrega DATE,
+	hora_entrega TIME,
+	fecha_recoger DATE,
+	hora_recoger time,
+	id_estado INTEGER REFERENCES Estados_pedidos(id_estado)
+);
+ 
+CREATE TABLE Departamentos(
+	id_departamento SERIAL PRIMARY KEY,
+	nombre VARCHAR (20)
+);
+
+CREATE TABLE Nota_ventas(
+	numero_nota SERIAL PRIMARY KEY,
+	fecha DATE,
+	total DECIMAL(10,2),
+	id_anticipo INTEGER REFERENCES Anticipos(id_anticipo),
+	id_cliente INTEGER REFERENCES Clientes(id_cliente),
+	id_empleado INTEGER REFERENCES Empleados(id_empleado),
+	id_departamento INTEGER REFERENCES Departamentos(id_departamento),
+	id_detalle_pedido INTEGER UNIQUE  REFERENCES Detalle_pedido(detalle_pedido)
+);
+
+CREATE TABLE Categorias(
+	id_categoria SERIAL PRIMARY KEY,
+	nombre VARCHAR(30)
+);
+
+CREATE TABLE Marcas(
+	id_marca SERIAL PRIMARY KEY,
+	nombre VARCHAR (40)
+);
+
+CREATE TABLE Unidad_medida(
+	id_unidad_med SERIAL PRIMARY KEY,
+	nombre VARCHAR (20)
+);
+
+CREATE TABLE Productos(
+	codigo INTEGER PRIMARY KEY,
+	nombre varchar (30),
+	existencia INTEGER,
+	id_categoria INTEGER REFERENCES Categorias(id_categoria),
+	id_marca INTEGER REFERENCES Marcas (id_marca),
+	id_unidad_med INTEGER REFERENCES Unidad_medida (id_unidad_med)
+);
+
+CREATE TABLE Detalle_venta(
+	id_detalle serial primary key,
+	cantidad INTEGER,
+	Subtotal decimal(10,2),
+	fecha DATE,
+	codigo INTEGER REFERENCES Productos(codigo),
+	numero_nota INTEGER REFERENCES Nota_ventas(numero_nota)
+);
+CREATE TABLE Reportes(
+	id_reporte SERIAL PRIMARY KEY,
+	cve VARCHAR (30),
+	descripcion TEXT
+);
+
+CREATE TABLE detalle_reporte(
+	id_detalle_rep serial PRIMARY KEY,
+	total DECIMAL (10,2),
+	id_reporte INTEGER REFERENCES Reportes(id_reporte),
+	id_detalle_venta INTEGER REFERENCES Detalle_venta(id_detalle)
+);
