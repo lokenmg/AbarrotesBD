@@ -73,7 +73,7 @@ CREATE TABLE Nota_ventas(
 	id_cliente INTEGER REFERENCES Clientes(id_cliente),
 	id_empleado INTEGER REFERENCES Empleados(id_empleado),
 	id_departamento INTEGER REFERENCES Departamentos(id_departamento),
-	id_detalle_pedido INTEGER UNIQUE  REFERENCES Detalle_pedido(detalle_pedido)
+	id_detalle_pedido INTEGER UNIQUE  REFERENCES Detalle_pedido(id_detalle_pedido)
 );
 
 CREATE TABLE Categorias(
